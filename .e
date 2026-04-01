@@ -1,0 +1,8 @@
+DB_NAME=school_manage_db
+DB_USER=root
+DB_PASS=
+DB_HOST=localhost
+
+EMAIL_USER=testrj8@gmail.com
+EMAIL_PASS=ndiu gumd qkvw tlzo
+JWT_SECRET=SUPER_SECRET_ADMIN_KEY
