@@ -14,26 +14,61 @@ const student_attendance = require("./attendance_tracker/attendence_Router")
 const app = express();
 
 // CORS
+// app.use(cors({
+//     // origin: "https://school-vert-beta.vercel.app", // Aapka Vercel URL
+//     origin: ["https://school-vert-beta.vercel.app", "http://127.0.0.1:5500", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html", "null"],
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Bypass-Tunnel-Reminder']
+// }));
+
+// // ⚡ Sabse Important Middleware (Dev Tunnel Bypass)
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "https://school-vert-beta.vercel.app", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html" );
+//     res.header("Access-Control-Allow-Credentials", "true");
+//     res.header("Bypass-Tunnel-Reminder", "true"); 
+//     res.header("X-Requested-With", "XMLHttpRequest");
+
+//     // Preflight (OPTIONS) request ko handle karein
+//     if (req.method === "OPTIONS") {
+//         return res.status(200).send("OK");
+//     }
+//     next();
+// });
+const allowedOrigins = [
+  "https://school-vert-beta.vercel.app",
+  "http://127.0.0.1:5500",
+  "https://jgqw00mq-5500.inc1.devtunnels.ms"
+];
+
 app.use(cors({
-    // origin: "https://school-vert-beta.vercel.app", // Aapka Vercel URL
-    origin: ["https://school-vert-beta.vercel.app", "http://127.0.0.1:5500", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html", "null"],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Bypass-Tunnel-Reminder']
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      return callback(new Error('CORS not allowed'), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
 }));
 
-// ⚡ Sabse Important Middleware (Dev Tunnel Bypass)
+// FIXED HEADERS
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://school-vert-beta.vercel.app", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html" );
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Bypass-Tunnel-Reminder", "true"); 
-    res.header("X-Requested-With", "XMLHttpRequest");
+  const origin = req.headers.origin;
 
-    // Preflight (OPTIONS) request ko handle karein
-    if (req.method === "OPTIONS") {
-        return res.status(200).send("OK");
-    }
-    next();
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
 });
 
 app.use(express.json());
