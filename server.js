@@ -119,11 +119,12 @@ app.use("/bank", bank_create);
 app.use("/fee_to_use_Expense", feeMoneyExpenseTr);
 app.use("/attendance", student_attendance);
 
-// ---------------- Sequelize Sync ----------------
-sequelize.sync()
-  .then(() => console.log("Models Synced"))
+  // ---------------- Sequelize Sync ----------------
+sequelize.sync({ alter: true })   // 👈 IMPORTANT
+  .then(() => console.log("✅ Models Synced (Tables Created)"))
   .catch(err => console.log(err));
 
+  
 // ---------------- Start Server ----------------
 const PORT = 3000;
 app.listen(PORT, () => {
