@@ -5,11 +5,12 @@ const sequelize = new Sequelize(
   "root",         // username
   "",             // password
   {
-    host: "localhost",
+    host: "127.0.0.1",
     dialect: "mysql",
     logging: false
   }
 );
+// nano /root/school_project/config/db.js
 
 sequelize.authenticate()
   .then(() => console.log("Sequelize MySQL Connected"))
