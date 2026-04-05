@@ -67,7 +67,7 @@ const express = require("express");
 const sequelize = require("./config/db");
 const cors = require("cors");
 
-// ---------------- IMPORT ROUTES ----------------
+// Import Routes
 const adminRoutes = require("./admin/adminRoute");
 const studentAuthRoutes = require("./student/studentAuthRoute");
 const studentAdmissionRoute = require("./studentAdmission/studentAdmissionRoute");
@@ -76,34 +76,37 @@ const bank_create = require("./bank_data/bank_routes");
 const feeMoneyExpenseTr = require("./adminExpense_into_Fee/expenseRoutes");
 const student_attendance = require("./attendance_tracker/attendence_Router");
 
-// ---------------- IMPORT MODELS ----------------
-require("./models/Admin"); // 👈 IMPORTANT (table create ke liye)
+// Import Models for Sync
+require("./models/Admin"); 
 
-// ---------------- APP INIT ----------------
 const app = express();
 
-// ---------------- CORS ----------------
+// --- CORS CONFIGURATION ---
+const allowedOrigins = [
+  "https://school-vert-beta.vercel.app",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500"
+];
+
 app.use(cors({
-  origin: [
-    "https://school-vert-beta.vercel.app",
-    "http://127.0.0.1:5500",
-    "https://jgqw00mq-5500.inc1.devtunnels.ms"
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Preflight fix
-
-// ---------------- BODY PARSER ----------------
+// --- MIDDLEWARES ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// ---------------- STATIC ----------------
 app.use("/uploads", express.static("uploads"));
 
-// ---------------- ROUTES ----------------
+// --- ROUTES ---
 app.use("/admin", adminRoutes);
 app.use("/student", studentAuthRoutes);
 app.use("/studentAdmission", studentAdmissionRoute);
@@ -112,17 +115,24 @@ app.use("/bank", bank_create);
 app.use("/fee_to_use_Expense", feeMoneyExpenseTr);
 app.use("/attendance", student_attendance);
 
-// ---------------- DATABASE SYNC ----------------
-sequelize.sync({ alter: true })
-  .then(() => console.log("✅ Models Synced (Tables Created)"))
-  .catch(err => console.log("❌ Sync Error:", err));
+// --- DB SYNC & SERVER START ---
+const PORT = process.env.PORT || 3000;
 
-// ---------------- SERVER START ----------------
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database Connection Established.");
+    
+    // Live server par alter: true dhyan se use karein
+    await sequelize.sync({ alter: true });
+    console.log("✅ Models Synced.");
 
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Unable to connect to the database:", error);
+  }
+};
 
-
-
+startServer();
