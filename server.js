@@ -101,7 +101,28 @@ app.use(cors({
 }));
 
 // Preflight requests
-app.options("*", cors());
+app.use(cors({
+    
+    origin: ["https://school-vert-beta.vercel.app", "http://127.0.0.1:5500", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html", "null"],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Bypass-Tunnel-Reminder']
+}));
+
+// ⚡ Sabse Important Middleware (Dev Tunnel Bypass)
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://school-vert-beta.vercel.app", "https://jgqw00mq-5500.inc1.devtunnels.ms/index.html" );
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Bypass-Tunnel-Reminder", "true"); 
+    res.header("X-Requested-With", "XMLHttpRequest");
+
+    // Preflight (OPTIONS) request ko handle karein
+    if (req.method === "OPTIONS") {
+        return res.status(200).send("OK");
+    }
+    next();
+});
+
 
 // ---------------- Middlewares ----------------
 app.use(express.json());
