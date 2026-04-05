@@ -3,7 +3,7 @@ const { Sequelize } = require("sequelize");
 const sequelize = new Sequelize(
   "school_manage_db",   // DB name
   "root",         // username
-  "",             // password
+  "School@2026",             // password
   {
     host: "127.0.0.1",
     dialect: "mysql",
