@@ -141,9 +141,10 @@ app.use("/fee_to_use_Expense", feeMoneyExpenseTr);
 app.use("/attendance", student_attendance);
 
   // ---------------- Sequelize Sync ----------------
-sequelize.sync({ alter: true })   // 👈 IMPORTANT
-  .then(() => console.log("✅ Models Synced (Tables Created)"))
+ sequelize.sync()
+  .then(() => console.log("Models Synced"))
   .catch(err => console.log(err));
+
 
   
 // ---------------- Start Server ----------------
