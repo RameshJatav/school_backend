@@ -77,7 +77,7 @@ const feeMoneyExpenseTr = require("./adminExpense_into_Fee/expenseRoutes");
 const student_attendance = require("./attendance_tracker/attendence_Router");
 
 // Import Models for Sync
-require("./models/Admin"); 
+require("./admin/adminModel"); 
 
 const app = express();
 
