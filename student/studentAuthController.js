@@ -62,20 +62,20 @@ exports.login = async (req, res) => {
       expires_at: expiresAt,
     });
 
-  //   await transporter.sendMail({
-  //     to: email,
-  //     subject: "Login OTP - JAMIA TARBIA TUL BANAT SOCIATY JAJOR",
-  //     html: `
-  //   <div style="font-family: Arial, sans-serif;">
-  //     <h2>JAMIA TARBIA TUL BANAT SOCIATY JAJOR</h2>
-  //     <p>Your Login OTP is:</p>
-  //     <h1 style="color: #2e6c80;">${otp}</h1>
-  //     <p>Valid for 10 minutes</p>
-  //     <br/>
-  //     <p>If you did not request this, please ignore this email.</p>
-  //   </div>
-  // `,
-  //   });
+    await transporter.sendMail({
+      to: email,
+      subject: "Login OTP - JAMIA TARBIA TUL BANAT SOCIATY JAJOR",
+      html: `
+    <div style="font-family: Arial, sans-serif;">
+      <h2>JAMIA TARBIA TUL BANAT SOCIATY JAJOR</h2>
+      <p>Your Login OTP is:</p>
+      <h1 style="color: #2e6c80;">${otp}</h1>
+      <p>Valid for 10 minutes</p>
+      <br/>
+      <p>If you did not request this, please ignore this email.</p>
+    </div>
+  `,
+    });
 
     console.log("🔐 LOGIN OTP:", otp);
     res.json({ message: "OTP Sent successfully. Please Check Your Mailbox." });
