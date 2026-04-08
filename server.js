@@ -84,8 +84,8 @@ const app = express();
 // --- CORS CONFIGURATION ---
 const allowedOrigins = [
   "https://school-vert-beta.vercel.app",
-  "http://localhost:5500",
-  "http://127.0.0.1:5500"
+  "https://school-backend-vps.loca.lt",
+   "http://127.0.0.1:5500"
 ];
 
 app.use(cors({
