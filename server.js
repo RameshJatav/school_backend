@@ -88,19 +88,29 @@ const allowedOrigins = [
    "http://127.0.0.1:5500"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+// 1. Pehle Origins ki list banayein
+const allowedOrigins = [
+    "https://school-vert-beta.vercel.app",
+    "https://exploring-sustained-secretariat-smaller.trycloudflare.com", // Naya Cloudflare URL
+    "http://localhost:3000",
+    "http://127.0.0.1:5500"
+];
 
+// 2. CORS middleware ko sahi karein
+app.use(cors({
+    origin: function (origin, callback) {
+        // Agar request local ho (!origin) ya hamari list mein ho
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log("Blocked by CORS:", origin); // Debugging ke liye
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 // --- MIDDLEWARES ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
